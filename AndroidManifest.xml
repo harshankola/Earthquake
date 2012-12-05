@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.paad.earthquake"
-    android:versionCode="5"
-    android:versionName="1.4" >
+    android:versionCode="6"
+    android:versionName="1.5.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -27,6 +27,11 @@
             android:label="Earthquake Preferences" >
         </activity>
         <activity android:name=".FragmentPreferences" />
+
+        <provider
+            android:name="EarthquakeProvider"
+            android:authorities="com.paad.earthquakeprovider" >
+        </provider>
     </application>
 
 </manifest>
