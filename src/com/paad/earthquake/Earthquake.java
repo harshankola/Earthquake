@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends FragmentActivity {
+public class Earthquake extends FragmentActivity {
 
 	static final private int MENU_PREFERENCES = Menu.FIRST + 1;
 	static final private int MENU_UPDATE = Menu.FIRST + 2;
