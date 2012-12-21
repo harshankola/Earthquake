@@ -6,10 +6,10 @@
     android:orientation="vertical" >
 
     <fragment
-        android:id="@+id/EarthquakeListFragment"
-        android:name="com.paad.earthquake.EarthquakeListFragment"
+        class="com.paad.earthquake.EarthquakeSerchResultsFragment"
+        android:id="@+id/EarthquakeSerchResultsFragment"
+        android:name="com.paad.earthquake.EarthquakeSerchResultsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.paad.earthquake.EarthquakeListFragment" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
