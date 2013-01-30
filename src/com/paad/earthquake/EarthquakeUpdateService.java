@@ -25,6 +25,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import android.app.AlarmManager;
+import android.app.IntentService;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -34,6 +37,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -41,9 +45,17 @@ import android.util.Log;
  * @author Harrsh
  * 
  */
-public class EarthquakeUpdateService extends Service {
+public class EarthquakeUpdateService extends IntentService {
 
-	private Timer updateTimer;
+	public EarthquakeUpdateService() {
+		super("EarthquakeUpdateService");
+		// TODO Auto-generated constructor stub
+	}
+
+	public EarthquakeUpdateService(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -182,54 +194,13 @@ public class EarthquakeUpdateService extends Service {
 		query.close();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
-	 */
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
-
-		// Retrieve the shared preferences
-		Context context = getApplicationContext();
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-
-		int updateFreq = Integer.parseInt(prefs.getString(
-				PreferencesActivity.PREF_UPDATE_FREQ, "60"));
-		boolean autoUpdateChecked = prefs.getBoolean(
-				PreferencesActivity.PREF_AUTO_UPDATE, false);
-
-		updateTimer.cancel();
-		if (autoUpdateChecked) {
-			updateTimer = new Timer("earthquakeUpdates");
-			updateTimer.scheduleAtFixedRate(doRefresh, 0,
-					updateFreq * 60 * 1000);
-		} else {
-			Thread t = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					refreshEarthquakes();
-				}
-			});
-			t.start();
-		}
-		return Service.START_STICKY;
-	}
+	
 
 	public static String TAG = "EARTHQUAKE_UPDATE_SERVICE";
 
-	private TimerTask doRefresh = new TimerTask() {
+	private AlarmManager alarmManager;
 
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			refreshEarthquakes();
-		}
-	};
+	private PendingIntent alarmIntent;
 
 	/*
 	 * (non-Javadoc)
@@ -240,7 +211,35 @@ public class EarthquakeUpdateService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		updateTimer = new Timer("earthquakeUpdates");
+		alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		String ALARM_ACTION = EarthquakeAlarmReceiver.ACTION_REFRESH_EARTHQUAKE_ALARM;
+		Intent intentToFire = new Intent(ALARM_ACTION);
+		alarmIntent = PendingIntent.getBroadcast(this, 0, intentToFire, 0);
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		// Retrieve the shared preferences
+		Context context = getApplicationContext();
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+
+		int updateFreq = Integer.parseInt(prefs.getString(
+				PreferencesActivity.PREF_UPDATE_FREQ, "60"));
+		boolean autoUpdateChecked = prefs.getBoolean(
+				PreferencesActivity.PREF_AUTO_UPDATE, false);
+
+		if (autoUpdateChecked) {
+			int alarmType = AlarmManager.ELAPSED_REALTIME_WAKEUP;
+			long timeToRefresh = SystemClock.elapsedRealtime() + updateFreq
+					* 60 * 1000;
+			alarmManager.setInexactRepeating(alarmType, timeToRefresh,
+					updateFreq * 60 * 1000, alarmIntent);
+		} else
+			alarmManager.cancel(alarmIntent);
+
+		refreshEarthquakes();
 	}
 
 }
