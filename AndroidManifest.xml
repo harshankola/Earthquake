@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.paad.earthquake"
-    android:versionCode="10"
-    android:versionName="1.6.3" >
+    android:versionCode="11"
+    android:versionName="1.7.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,8 @@
 
         <activity
             android:name="com.paad.earthquake.Earthquake"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,15 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <fragment
-        android:id="@+id/EarthquakeListFragment"
-        android:name="com.paad.earthquake.EarthquakeListFragment"
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFF"
+        android:iconifiedByDefault="false" >
+    </SearchView>
+
+    <FrameLayout
+        android:id="@+id/EarthquakeFragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.paad.earthquake.EarthquakeListFragment" />
+        android:layout_height="match_parent" >
+    </FrameLayout>
 
 </LinearLayout>
