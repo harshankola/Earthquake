@@ -31,16 +31,6 @@ public class Earthquake extends Activity {
 
 		updateFromPreferences();
 
-		// Use the Search Manager to find the SearchableInfo related to this
-		// Activity.
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchableInfo searchableInfo = searchManager
-				.getSearchableInfo(getComponentName());
-
-		// Bind the Activity's SearchableInfo to the Search View
-		SearchView searchView = (SearchView) findViewById(R.id.searchView);
-		searchView.setSearchableInfo(searchableInfo);
-
 		ActionBar actionBar = getActionBar();
 
 		View fragmentContainer = findViewById(R.id.EarthquakeFragmentContainer);
@@ -89,7 +79,18 @@ public class Earthquake extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		menu.add(0, MENU_PREFERENCES, Menu.NONE, R.string.menu_preferences);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+
+		// Use the Search Manager to find the SearchableInfo related to this
+		// Activity.
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchableInfo searchableInfo = searchManager
+				.getSearchableInfo(getComponentName());
+
+		// Bind the Activity's SearchableInfo to the Search View
+		SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+		searchView.setSearchableInfo(searchableInfo);
 
 		return true;
 	}
@@ -97,8 +98,12 @@ public class Earthquake extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
+		case (R.id.menu_refresh): {
+			startService(new Intent(this, EarthquakeUpdateService.class));
+			return true;
+		}
 
-		case (MENU_PREFERENCES): {
+		case (R.id.menu_preferences): {
 			Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? PreferencesActivity.class
 					: FragmentPreferences.class;
 			Intent i = new Intent(this, c);
